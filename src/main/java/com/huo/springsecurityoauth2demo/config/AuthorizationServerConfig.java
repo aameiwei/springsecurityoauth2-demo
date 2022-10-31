@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 /**
  * @Author 小源同学
@@ -26,15 +27,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserService userService;
+//    @Autowired
+//    @Qualifier("redisTokenStore")
+//    private TokenStore tokenStore;
+
     @Autowired
-    @Qualifier("redisTokenStore")
+    @Qualifier("jwtTokenStore")
     private TokenStore tokenStore;
+    @Autowired
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userService)
-                .tokenStore(tokenStore);
+                 //redis存储
+//              .tokenStore(tokenStore)
+                //配置令牌存储策略
+                .tokenStore(tokenStore)
+                .accessTokenConverter(jwtAccessTokenConverter)
+                ;
     }
 
 
